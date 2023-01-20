@@ -1,0 +1,20 @@
+// const config = {
+//   authRequired: true,
+//   auth0Logout: true,
+//   secret: AUTHO_SECRET,
+//   baseURL: AUTHO_AUDIENCE,
+//   clientID: AUTHO_CLIENT_ID,
+//   issuerBaseURL: AUTHO_BASE_URL,
+// };
+
+// auth router attaches /login, /logout, and /callback routes to the baseURL
+// app.use(auth(config));
+
+// req.isAuthenticated is provided from the auth router
+// app.get("/", (req, res) => {
+//   res.send(req.oidc.isAuthenticated() ? "Logged in" : "Logged out");
+// });
+
+const { auth } = require("express-openid-connect");
+
+// const { AUTHO_SECRET, AUTHO_AUDIENCE, AUTHO_CLIENT_ID, AUTHO_BASE_URL} = process.env;
