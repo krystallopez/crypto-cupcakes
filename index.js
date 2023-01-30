@@ -40,7 +40,7 @@ app.use(async (req, res, next) => {
       email:req.oidc.user.email,
     },
   });
-  // console.log(user);
+  console.log(user);
   next();
 });
 
@@ -50,11 +50,11 @@ app.get("/", (req, res) => {
   console.log(req.oidc.user);
   res.send(
     req.oidc.isAuthenticated()
-      ? `<h2>CryptoCupcakesAPI</h2>
-  <h2>Welcome, ${req.oidc.user.name}</h2>
-  <p>Username: ${req.oidc.user.nickname}</p>
-  <p>${req.oidc.user.email}</p>
-  <img src = "${req.oidc.user.picture} alt="${req.oidc.user.name}>"`
+      ? `<h2 align="center">CryptoCupcakesAPI</h2>
+  <h2 align="center">Welcome, ${req.oidc.user.name}</h2>
+  <p align="center">Username: ${req.oidc.user.nickname}</p>
+  <p align="center">Email: ${req.oidc.user.email}</p>
+   <img src="${req.oidc.user.picture}" alt="${req.oidc.user.name}>"`
       : "Logged out"
   );
   // The above lines 37-44
