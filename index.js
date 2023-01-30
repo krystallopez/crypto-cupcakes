@@ -4,9 +4,11 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const { PORT = 3000 } = process.env;
+
 // TODO - require express-openid-connect and destructure auth from it
 const { auth } = require("express-openid-connect");
 const { User, Cupcake } = require("./db");
+const { OPEN_READWRITE } = require("sqlite3");
 
 const { MY_SECRET, MY_AUDIENCE, MY_CLIENT_ID, MY_BASE_URL } = process.env;
 
@@ -16,6 +18,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// define the config object
 const config = {
   authRequired: true,
   auth0Logout: true,
@@ -26,9 +29,23 @@ const config = {
 };
 
 // auth router attaches /login, /logout, and /callback routes to the baseURL
-app.use(auth(config));
+app.use(auth(config)); //This is when we will initialize our connection to OpenID Connect. This grants the user access to their OIDC.
 
-// req.isAuthenticated is provided from the auth router
+//User middleware to save their information to the database
+app.use(async (req, res, next) => {
+  const [user] = await User.findOrCreate({
+    where: {
+      username:req.oidc.user.nickname,
+      name: req.oidc.user.name,
+      email:req.oidc.user.email,
+    },
+  });
+  // console.log(user);
+  next();
+});
+
+// Creates a GET handler that sends back whether the user is Logged in or Logged Out
+//req.isAuthenticated is provided from the auth router
 app.get("/", (req, res) => {
   console.log(req.oidc.user);
   res.send(
@@ -40,6 +57,7 @@ app.get("/", (req, res) => {
   <img src = "${req.oidc.user.picture} alt="${req.oidc.user.name}>"`
       : "Logged out"
   );
+  // The above lines 37-44
 });
 
 app.get("/cupcakes", async (req, res, next) => {
